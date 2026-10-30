@@ -12,3 +12,36 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+:root {
+  --nat-navbar-bg: #00008b;
+  --nat-navbar-bg-rgb: 0, 0, 139;
+  --nat-navbar-text-color: white;
+  --nat-navbar-highlight-text: khaki;
+}
+
+body {
+  --bs-dark: var(--nat-navbar-bg);
+  --bs-dark-rgb: var(--nat-navbar-bg-rgb);
+
+  background: fixed center url("/background.jpg");
+  background-size: cover;
+  min-height: 100vh;
+}
+
+body .navbar {
+  --bs-navbar-active-color: var(--nat-navbar-highlight-text);
+  --bs-navbar-brand-color: var(--nat-navbar-text-color);
+  --bs-navbar-brand-hover-color: var(--nat-navbar-highlight-text);
+  --bs-navbar-color: var(--nat-navbar-text-color);
+  --bs-navbar-hover-color: var(--nat-navbar-highlight-text);
+}
+
+footer,
+footer a {
+  color: var(--nat-navbar-text-color);
+}
+
+.bg-dark a.dropdown-item {
+  color: var(--nat-navbar-bg);
+}
