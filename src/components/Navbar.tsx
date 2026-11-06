@@ -24,7 +24,7 @@ const NavBar: React.FC = () => {
                   Add Contact
                 </Nav.Link>
                 <Nav.Link id="list-stuff-nav" href="/list" active={pathName === '/list'}>
-                  List Stuff
+                  List Contacts
                 </Nav.Link>
               </>
             )}
