@@ -1,47 +1,41 @@
-import { Col, Container, Row, Table } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { prisma } from '@/lib/prisma';
-import StuffItem from '@/components/StuffItem';
+import ContactCard from '@/components/ContactCard';
 import { loggedInProtectedPage } from '@/lib/page-protection';
 import { auth } from '@/lib/auth';
 
-/** Render a list of stuff for the logged in user. */
+/** Render a list of contacts for the logged in user. */
 const ListPage = async () => {
-  // Protect the page, only logged in users can access it.
+  // Protect the page so only logged-in users can access it.
   const session = await auth();
+
   loggedInProtectedPage(
     session as {
       user: { email: string; id: string; name: string };
     } | null,
   );
+
+  // Get the email address of the logged-in user.
   const owner = (session && session.user && session.user.email) || '';
-  const stuff = await prisma.stuff.findMany({
+
+  // Get only the contacts belonging to this user.
+  const contacts = await prisma.contact.findMany({
     where: {
       owner,
     },
   });
-  // console.log(stuff);
+
   return (
     <main>
-      <Container id="list" fluid className="py-3">
-        <Row>
-          <Col>
-            <h1>Stuff</h1>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Quantity</th>
-                  <th>Condition</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stuff.map((item) => (
-                  <StuffItem key={item.id} {...item} />
-                ))}
-              </tbody>
-            </Table>
-          </Col>
+      <Container id="list" className="py-4">
+        <h1 className="text-center mb-4">Contacts</h1>
+
+        <Row xs={1} md={2} lg={3} className="g-4">
+          {contacts.map((contact) => (
+            <Col key={`Contact-${contact.id}`}>
+              <ContactCard contact={contact} />
+            </Col>
+          ))}
         </Row>
       </Container>
     </main>
