@@ -5,6 +5,7 @@ import { Stuff } from '@prisma/client';
 import { hash } from 'bcrypt';
 import { redirect } from 'next/navigation';
 import { prisma } from './prisma';
+import { auth } from '@/lib/auth';
 
 /**
  * Adds a new stuff to the database.
@@ -90,6 +91,74 @@ export async function changePassword(credentials: { email: string; password: str
     where: { email: credentials.email },
     data: {
       password,
+    },
+  });
+}
+
+export async function addContact(contact: {
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}) {
+  const session = await auth();
+
+  if (!session?.user?.email ||
+      session.user.email !== contact.owner) {
+    throw new Error('Unauthorized');
+  }
+
+  await prisma.contact.create({
+    data: {
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      address: contact.address,
+      image: contact.image,
+      description: contact.description,
+      owner: session.user.email,
+    },
+  });
+}
+
+export async function editContact(contact: {
+  id: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  image: string;
+  description: string;
+  owner: string;
+}) {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    throw new Error('Unauthorized');
+  }
+
+  const existingContact = await prisma.contact.findUnique({
+    where: {
+      id: contact.id,
+    },
+  });
+
+  if (!existingContact ||
+      existingContact.owner !== session.user.email ||
+      contact.owner !== session.user.email) {
+    throw new Error('Unauthorized');
+  }
+
+  await prisma.contact.update({
+    where: {
+      id: contact.id,
+    },
+    data: {
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      address: contact.address,
+      image: contact.image,
+      description: contact.description,
     },
   });
 }
