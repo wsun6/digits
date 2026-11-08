@@ -6,7 +6,6 @@ import { auth } from '@/lib/auth';
 
 /** Display all contacts for administrators. */
 const AdminPage = async () => {
-  // Protect the page.
   const session = await auth();
 
   loggedInProtectedPage(
@@ -15,7 +14,12 @@ const AdminPage = async () => {
     } | null,
   );
 
-  const contacts = await prisma.contact.findMany();
+  // Retrieve contacts and their associated notes.
+  const contacts = await prisma.contact.findMany({
+    include: {
+      notes: true,
+    },
+  });
 
   return (
     <main>
@@ -27,7 +31,10 @@ const AdminPage = async () => {
         <Row xs={1} md={2} lg={3} className="g-4">
           {contacts.map((contact) => (
             <Col key={`Contact-${contact.id}`}>
-              <ContactCardAdmin contact={contact} />
+              <ContactCardAdmin
+                contact={contact}
+                notes={contact.notes}
+              />
             </Col>
           ))}
         </Row>

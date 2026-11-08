@@ -4,9 +4,9 @@ import ContactCard from '@/components/ContactCard';
 import { loggedInProtectedPage } from '@/lib/page-protection';
 import { auth } from '@/lib/auth';
 
-/** Render a list of contacts for the logged in user. */
+/** Render a list of contacts for the logged-in user. */
 const ListPage = async () => {
-  // Protect the page so only logged-in users can access it.
+  // Protect the page.
   const session = await auth();
 
   loggedInProtectedPage(
@@ -15,11 +15,18 @@ const ListPage = async () => {
     } | null,
   );
 
-  // Get the email address of the logged-in user.
+  // Get the logged-in user's email.
   const owner = (session && session.user && session.user.email) || '';
 
-  // Get only the contacts belonging to this user.
+  // Get contacts belonging to this user.
   const contacts = await prisma.contact.findMany({
+    where: {
+      owner,
+    },
+  });
+
+  // Get notes belonging to this user.
+  const notes = await prisma.note.findMany({
     where: {
       owner,
     },
@@ -28,12 +35,19 @@ const ListPage = async () => {
   return (
     <main>
       <Container id="list" className="py-4">
-        <h1 className="text-center mb-4">Contacts</h1>
+        <h1 className="text-center mb-4">
+          List Contacts
+        </h1>
 
         <Row xs={1} md={2} lg={3} className="g-4">
           {contacts.map((contact) => (
             <Col key={`Contact-${contact.id}`}>
-              <ContactCard contact={contact} />
+              <ContactCard
+                contact={contact}
+                notes={notes.filter(
+                  (note) => note.contactId === contact.id
+                )}
+              />
             </Col>
           ))}
         </Row>
