@@ -25,15 +25,29 @@ const ListPage = async () => {
     },
   });
 
+  // Get all notes belonging to the logged-in user.
+  const notes = await prisma.note.findMany({
+    where: {
+      owner,
+    },
+  });
+
   return (
     <main>
       <Container id="list" className="py-4">
-        <h1 className="text-center mb-4">Contacts</h1>
+        <h1 className="text-center mb-5">
+          List Contacts
+        </h1>
 
         <Row xs={1} md={2} lg={3} className="g-4">
           {contacts.map((contact) => (
             <Col key={`Contact-${contact.id}`}>
-              <ContactCard contact={contact} />
+              <ContactCard
+                contact={contact}
+                notes={notes.filter(
+                  (note) => note.contactId === contact.id
+                )}
+              />
             </Col>
           ))}
         </Row>
