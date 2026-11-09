@@ -303,6 +303,8 @@ When you retrieve the app at http://localhost:3000, this is what should be displ
 
 The next step is to use the Login menu to either Login to an existing account or register a new account.
 
+<img src="doc/landing.png">
+
 #### Login page
 
 Clicking on the Login link, then on the Sign In menu item displays this page:

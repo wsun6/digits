@@ -23,7 +23,6 @@ type AddContactFormValues = {
 };
 
 const AddContactForm = ({ owner }: { owner: string }) => {
-  const formPadding = 'py-1';
 
   const {
     register,
